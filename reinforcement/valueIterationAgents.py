@@ -68,7 +68,7 @@ class ValueIterationAgent(ValueEstimationAgent):
                 if not self.mdp.getPossibleActions(state):
                     continue
                 bestAction = self.computeActionFromValues(state)
-                print("My best action is:", bestAction)
+                #print("My best action is:", bestAction)
                 value = self.computeQValueFromValues(state, bestAction)
                 iterationValues[state] = value
             self.values = iterationValues
