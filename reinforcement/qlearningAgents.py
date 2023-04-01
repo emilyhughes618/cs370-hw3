@@ -42,7 +42,7 @@ class QLearningAgent(ReinforcementAgent):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
 
-        "*** YOUR CODE HERE ***"
+        self.qValues = util.Counter()
 
     def getQValue(self, state, action):
         """
@@ -51,7 +51,9 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.qValues[(state, action)]
+
+        
 
 
     def computeValueFromQValues(self, state):
@@ -62,7 +64,10 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if not self.getLegalActions(state):
+            return 0.0
+        maxAction = self.computeActionFromQValues(state)
+        return self.getQValue(state, maxAction)
 
     def computeActionFromQValues(self, state):
         """
@@ -71,7 +76,18 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        actions = self.getLegalActions(state)
+        if len(actions) == 0:
+            return None
+        maxAction = ("", float("-inf"))
+        for action in actions:
+            qValue = self.getQValue(state, action)
+            if qValue > maxAction[1]:
+                maxAction = (action, qValue)
+            if qValue == maxAction[1]:
+              randomAction = random.choice((action, maxAction[0]))
+              maxAction = (randomAction, qValue)
+        return maxAction[0]
 
     def getAction(self, state):
         """
@@ -102,7 +118,12 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if not self.getLegalActions(state):
+          return
+        oldQValue = self.getQValue(state, action)
+        futureQValue = self.computeValueFromQValues(nextState)
+        newQValue = oldQValue + self.alpha *  (reward + (self.discount * futureQValue) - oldQValue)
+        self.qValues[(state, action)] = newQValue
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
