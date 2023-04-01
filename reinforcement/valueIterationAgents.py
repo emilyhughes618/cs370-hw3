@@ -158,6 +158,7 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
     
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
+        '''
         states = self.mdp.getStates()
         length = len(states)
         
@@ -173,6 +174,17 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
                 q_value = self.getQValue(state, action)
                 q_values.append(q_value)
             self.values[state] = max(q_values)
+            '''
+        
+        states = self.mdp.getStates()
+        for i in range(self.iterations):
+            state = states[i % len(states)]
+            if not self.mdp.getPossibleActions(state):
+                continue
+            bestAction = self.computeActionFromValues(state)
+                #print("My best action is:", bestAction)
+            value = self.computeQValueFromValues(state, bestAction)
+            self.values[state] = value
 
 
 
