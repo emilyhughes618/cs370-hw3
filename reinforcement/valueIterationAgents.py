@@ -155,8 +155,27 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
         """
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
+    
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
+        states = self.mdp.getStates()
+        length = len(states)
+        
+        for i in range(self.iterations):
+            state = states[i % length]
+            if self.mdp.isTerminal(state):
+                continue
+
+            actions = self.mdp.getPossibleActions(state)
+            q_values = []
+
+            for action in actions:
+                q_value = self.getQValue(state, action)
+                q_values.append(q_value)
+            self.values[state] = max(q_values)
+
+
+
 
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
     """
